@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}{{ protocol.title }}{% endblock %}
+
+{% block content %}
+  <article class="protocol-detail">
+    <header>
+      <h2>{{ protocol.title }}</h2>
+      <p class="meta">Дата встречи: {{ protocol.meeting_date.strftime('%d.%m.%Y') }}</p>
+      {% if protocol.participants %}
+        <p class="meta">Участники: {{ protocol.participants }}</p>
+      {% endif %}
+      {% if protocol.summary %}
+        <p class="meta">Краткое описание: {{ protocol.summary }}</p>
+      {% endif %}
+    </header>
+
+    <section>
+      <h3>Текст протокола</h3>
+      <pre class="protocol-body">{{ protocol.body }}</pre>
+    </section>
+
+    <section>
+      <div class="section-header">
+        <h3>Решения</h3>
+        <form method="post" action="{{ url_for('protocols.reanalyze', protocol_id=protocol.id) }}">
+          <button type="submit" class="button">Повторить анализ</button>
+        </form>
+      </div>
+      {% if protocol.decisions %}
+        <ul>
+          {% for decision in protocol.decisions %}
+            <li>{{ decision.text }}</li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>Решения не найдены.</p>
+      {% endif %}
+    </section>
+
+    <section>
+      <h3>Поручения</h3>
+      {% if protocol.assignments %}
+        <table>
+          <thead>
+            <tr>
+              <th>Ответственный</th>
+              <th>Описание</th>
+              <th>Срок</th>
+              <th>Статус</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for assignment in protocol.assignments %}
+              <tr class="{% if assignment.completed %}completed{% endif %}">
+                <td data-label="Ответственный">{{ assignment.responsible or '—' }}</td>
+                <td data-label="Описание">{{ assignment.text }}</td>
+                <td data-label="Срок">
+                  {% if assignment.due_date %}
+                    {{ assignment.due_date.strftime('%d.%m.%Y') }}
+                  {% else %}
+                    —
+                  {% endif %}
+                </td>
+                <td data-label="Статус">
+                  <form method="post" action="{{ url_for('protocols.toggle_assignment', assignment_id=assignment.id) }}">
+                    <button type="submit" class="button secondary">
+                      {% if assignment.completed %}Возобновить{% else %}Выполнено{% endif %}
+                    </button>
+                  </form>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p>Поручений не найдено.</p>
+      {% endif %}
+    </section>
+
+    <section>
+      <h3>Коррекции и неточности</h3>
+      {% if protocol.corrections %}
+        <ul>
+          {% for correction in protocol.corrections %}
+            <li>{{ correction.text }}</li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>Нет замечаний к протоколу.</p>
+      {% endif %}
+    </section>
+  </article>
+{% endblock %}

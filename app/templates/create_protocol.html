@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Новый протокол{% endblock %}
+
+{% block content %}
+  <section class="form-section">
+    <h2>Новый протокол</h2>
+    <form method="post" class="form-grid">
+      <label>Название
+        <input type="text" name="title" required />
+      </label>
+      <label>Дата встречи
+        <input type="date" name="meeting_date" required />
+      </label>
+      <label>Участники
+        <textarea name="participants" rows="2" placeholder="Перечислите через запятую"></textarea>
+      </label>
+      <label>Краткое описание
+        <textarea name="summary" rows="2"></textarea>
+      </label>
+      <label>Текст протокола
+        <textarea name="body" rows="12" required placeholder="Полный текст протокола встречи"></textarea>
+      </label>
+      <button type="submit" class="button primary">Сохранить и проанализировать</button>
+    </form>
+  </section>
+{% endblock %}
