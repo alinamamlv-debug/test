@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Реестр протоколов{% endblock %}
+
+{% block content %}
+  <section>
+    <h2>Последние протоколы</h2>
+    {% if protocols %}
+      <ul class="protocol-list">
+        {% for protocol in protocols %}
+          <li>
+            <h3><a href="{{ url_for('protocols.view_protocol', protocol_id=protocol.id) }}">{{ protocol.title }}</a></h3>
+            <p class="meta">Дата: {{ protocol.meeting_date.strftime('%d.%m.%Y') }}</p>
+            {% if protocol.summary %}
+              <p>{{ protocol.summary }}</p>
+            {% endif %}
+            <div class="stats">
+              <span>Решений: {{ protocol.decisions|length }}</span>
+              <span>Поручений: {{ protocol.assignments|length }}</span>
+              <span>Коррекций: {{ protocol.corrections|length }}</span>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>Протоколов пока нет. Создайте первый документ.</p>
+    {% endif %}
+  </section>
+{% endblock %}
